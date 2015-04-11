@@ -9,6 +9,7 @@ namespace AnalyseAlgoTP2
     class Program
     {
         static Int32 size;
+        static Int32 show;
         static Int32 promisingTupleCounter;
 
         static void Main(string[] args)
@@ -26,9 +27,9 @@ namespace AnalyseAlgoTP2
                 Console.WriteLine("(Vous pouvez appuyer sur la touche 'Q' pour quitter)\n");
 
                 do {
-                    Console.Write("Veuillez saisir le nombre de rangées/colonnes du plateau (entre 1 et 12): ");
+                    Console.Write("Veuillez saisir le nombre de rangées/colonnes du plateau (entre 1 et 10): ");
                     input = Console.ReadLine();
-                } while (!input.Equals("q", StringComparison.InvariantCultureIgnoreCase) && (!Int32.TryParse(input, out size) || size <= 0 || size > 12));
+                } while (!input.Equals("q", StringComparison.InvariantCultureIgnoreCase) && (!Int32.TryParse(input, out size) || size <= 0 || size > 10));
 
                 if (input.Equals("q", StringComparison.InvariantCultureIgnoreCase))
                     break;
@@ -37,29 +38,26 @@ namespace AnalyseAlgoTP2
 
                 Console.WriteLine("\nNombre de solutions trouvées: {0}\n", TupleCollection.Instance().Collection.Count);
 
-                do
+                if (TupleCollection.Instance().Collection.Count != 0)
                 {
-                    Console.Write("Veuillez saisir le nombre de solutions à afficher: ");
-                    input = Console.ReadLine();
-                } while (!input.Equals("q", StringComparison.InvariantCultureIgnoreCase) && (!Int32.TryParse(input, out size) || size <= 0 || size > TupleCollection.Instance().Collection.Count));
-
-                if (input.Equals("q", StringComparison.InvariantCultureIgnoreCase))
-                    break;
-
-                Console.WriteLine();
-
-                for (int i = 0; i < size; i++)
-                {
-                    foreach(Int32 number in TupleCollection.Instance().Collection.ElementAt(i)) 
+                    do
                     {
-                        Console.Write(number + " ");
-                    }
-                    Console.Write(" ==> {0} tuples prometteurs", TupleCollection.Instance().PromisingTupleCounters.ElementAt(i));
+                        Console.Write("Veuillez saisir le nombre de solutions à afficher: ");
+                        input = Console.ReadLine();
+                    } while (!input.Equals("q", StringComparison.InvariantCultureIgnoreCase) && (!Int32.TryParse(input, out show) || show <= 0 || show > TupleCollection.Instance().Collection.Count));
+
+                    if (input.Equals("q", StringComparison.InvariantCultureIgnoreCase))
+                        break;
 
                     Console.WriteLine();
+
+                    for (int i = 0; i < show; i++)
+                    {
+                        Show(i);
+                    }
                 }
 
-                Console.Write("\nNombre total de tuples prometteurs: {0}\n", promisingTupleCounter);
+                Console.Write("Nombre total de tuples prometteurs: {0}\n", promisingTupleCounter);
                 input = Console.ReadLine();
             } while (!input.Equals("q", StringComparison.InvariantCultureIgnoreCase));
         }
@@ -93,6 +91,56 @@ namespace AnalyseAlgoTP2
                     }
                 }
             }
+        }
+
+        private static void Show(int element)
+        {
+            string table;
+
+            table = "";
+
+            for (int k = 0; k < ((size * 2) + 1); k++)
+            {
+                table += "-";
+            }
+
+            table += "\n";
+
+            for (int j = 1; j < ((size * 2) + 1); j++)
+            {
+                if (table[table.Length - 2] == '|')
+                {
+                    for (int k = 0; k < ((size * 2) + 1); k++)
+                    {
+                        table += "-";
+                    }
+
+                    table += "\n";
+                }
+                else
+                {
+                    table += "|";
+
+                    for (int k = 0; k < size; k++)
+                    {
+                        if (TupleCollection.Instance().Collection.ElementAt(element)[((j - 1) / 2)] == k)
+                        {
+                            table += "R|";
+                        }
+                        else
+                        {
+                            table += " |";
+                        }
+                    }
+
+                    table += "\n";
+                }
+            }
+
+            Console.Write(table);
+            Console.Write("Trouvé après {0} tuples prometteurs\n", TupleCollection.Instance().PromisingTupleCounters.ElementAt(element));
+
+            Console.WriteLine();
         }
     }
 }
